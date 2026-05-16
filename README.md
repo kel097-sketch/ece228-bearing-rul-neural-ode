@@ -106,5 +106,3 @@ Main outputs are saved under:
 results/tables/
 results/figures/
 ```
-
-Large files such as raw data, generated sequences, model checkpoints, latent outputs, and prediction files are excluded from GitHub using `.gitignore`.
