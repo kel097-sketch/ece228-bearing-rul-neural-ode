@@ -1,0 +1,14 @@
+.venv/
+.uv-cache/
+__pycache__/
+*.pyc
+
+data/
+processed/sequences/
+
+results/checkpoints/
+results/latent/
+results/predictions/
+
+.DS_Store
+Thumbs.db

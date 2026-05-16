@@ -1,0 +1,21 @@
+{
+  "protocol": "literature_aligned_lobo",
+  "split_name": "literature_C1_test_C1_Bearing1_5",
+  "train_bearings": [
+    "C1_Bearing1_2",
+    "C1_Bearing1_3",
+    "C1_Bearing1_4"
+  ],
+  "val_bearings": [
+    "C1_Bearing1_1"
+  ],
+  "test_bearings": [
+    "C1_Bearing1_5"
+  ],
+  "train_conditions": [
+    "C1"
+  ],
+  "test_conditions": [
+    "C1"
+  ]
+}
