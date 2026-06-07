@@ -1,0 +1,3 @@
+selection_rule,selected_K,avg_val_MAE,train_min_coverage,val_min_coverage,test_min_coverage,use
+strict_full_coverage,40,0.1787623129884409,1.0,1.0,1.0,main paper result
+raw_lowest_validation_mae,100,0.1144101625810205,0.875,0.5,0.8,supplement only / caveat

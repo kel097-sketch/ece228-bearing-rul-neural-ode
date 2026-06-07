@@ -343,7 +343,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Sparse-observation robustness for LSTM and Latent ODE.")
     parser.add_argument("--seq_dir", default="processed/sequences")
     parser.add_argument("--out", default="results/tables/sparse_observation_results.csv")
-    parser.add_argument("--keep_ratios", nargs="+", type=float, default=[1.0, 0.7, 0.5])
+    parser.add_argument("--keep_ratios", nargs="+", type=float, default=[1.0, 0.7, 0.5, 0.3])
     parser.add_argument("--epochs", type=int, default=60)
     parser.add_argument("--patience", type=int, default=8)
     parser.add_argument("--batch_size", type=int, default=64)

@@ -30,5 +30,4 @@ ACTIVE_MODEL_ORDER = [
     "TCN",
     "Transformer",
     "latent_ode",
-    "condition_aware_ode",
 ]

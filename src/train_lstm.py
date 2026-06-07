@@ -120,11 +120,11 @@ def train_one(seq_path: Path) -> None:
     dropout = 0.1
     lr = 1e-3
     batch_size = 64
-    epochs = 100
-    patience = 10
+    epochs = 200
+    patience = 20
 
     model = LSTMRegressor(input_dim, hidden_dim, num_layers, dropout).to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
     loss_fn = nn.MSELoss()
     train_loader = make_loader(X_train, y_train, batch_size, shuffle=True, device=device)
 
@@ -184,6 +184,7 @@ def train_one(seq_path: Path) -> None:
         "num_layers": num_layers,
         "dropout": dropout,
         "learning_rate": lr,
+        "weight_decay": 1e-4,
         "batch_size": batch_size,
         "epochs": epochs,
         "patience": patience,

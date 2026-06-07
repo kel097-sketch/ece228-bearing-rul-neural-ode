@@ -3,6 +3,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import pywt
 from scipy.stats import kurtosis, skew
 from tqdm import tqdm
 
@@ -10,6 +11,9 @@ from config import FS
 from utils import ensure_dir, safe_read_vibration_csv
 
 EPS = 1e-12
+WAVELET_NAME = "db4"
+WAVELET_LEVEL = 3
+WAVELET_MAX_POINTS = 8192
 
 
 def resolve_csv_path(file_path: str, metadata_path: Path) -> Path:
@@ -87,16 +91,78 @@ def frequency_domain_features(x: np.ndarray, fs: float = FS) -> dict:
     return features
 
 
-def channel_features(x: np.ndarray, prefix: str) -> dict:
+def wavelet_packet_features(
+    x: np.ndarray,
+    wavelet: str = WAVELET_NAME,
+    level: int = WAVELET_LEVEL,
+) -> dict:
+    x = np.asarray(x, dtype=np.float64)
+    packet = pywt.WaveletPacket(data=x, wavelet=wavelet, mode="symmetric", maxlevel=level)
+    nodes = packet.get_level(level, order="freq")
+    features = {}
+    total_energy = 0.0
+    energies = []
+    for i, node in enumerate(nodes, start=1):
+        coeff = np.asarray(node.data, dtype=np.float64)
+        energy = float(np.sum(coeff**2))
+        rms = float(np.sqrt(np.mean(coeff**2))) if coeff.size else 0.0
+        energies.append(energy)
+        total_energy += energy
+        features[f"wpt_l{level}_b{i}_energy"] = energy
+        features[f"wpt_l{level}_b{i}_rms"] = rms
+    for i, energy in enumerate(energies, start=1):
+        features[f"wpt_l{level}_b{i}_energy_ratio"] = float(energy / (total_energy + EPS))
+    return features
+
+
+def wavelet_coefficient_features(
+    x: np.ndarray,
+    wavelet: str = WAVELET_NAME,
+    level: int = WAVELET_LEVEL,
+) -> dict:
+    x = np.asarray(x, dtype=np.float64)
+    max_level = pywt.dwt_max_level(len(x), pywt.Wavelet(wavelet).dec_len)
+    use_level = min(level, max_level)
+    coeffs = pywt.wavedec(x, wavelet=wavelet, mode="symmetric", level=use_level)
+    labels = [f"ca{use_level}", *[f"cd{i}" for i in range(use_level, 0, -1)]]
+    features = {}
+    for label, coeff in zip(labels, coeffs):
+        coeff = np.asarray(coeff, dtype=np.float64)
+        if coeff.size == 0:
+            features[f"wav_{label}_mean"] = 0.0
+            features[f"wav_{label}_var"] = 0.0
+            features[f"wav_{label}_energy"] = 0.0
+            continue
+        features[f"wav_{label}_mean"] = float(np.mean(coeff))
+        features[f"wav_{label}_var"] = float(np.var(coeff))
+        features[f"wav_{label}_energy"] = float(np.sum(coeff**2))
+    return features
+
+
+def wavelet_features(x: np.ndarray) -> dict:
+    x = np.asarray(x, dtype=np.float64)
+    if len(x) > WAVELET_MAX_POINTS:
+        step = int(np.ceil(len(x) / WAVELET_MAX_POINTS))
+        x = x[::step]
+    features = {}
+    features.update(wavelet_packet_features(x))
+    features.update(wavelet_coefficient_features(x))
+    return features
+
+
+def channel_features(x: np.ndarray, prefix: str, include_wavelet: bool = False) -> dict:
     features = {}
     for name, value in time_domain_features(x).items():
         features[f"{prefix}_{name}"] = value
     for name, value in frequency_domain_features(x).items():
         features[f"{prefix}_{name}"] = value
+    if include_wavelet:
+        for name, value in wavelet_features(x).items():
+            features[f"{prefix}_{name}"] = value
     return features
 
 
-def extract_features(metadata: str, out: str) -> pd.DataFrame:
+def extract_features(metadata: str, out: str, include_wavelet: bool = False) -> pd.DataFrame:
     metadata_path = Path(metadata)
     meta_df = pd.read_csv(metadata_path)
     rows = []
@@ -108,8 +174,8 @@ def extract_features(metadata: str, out: str) -> pd.DataFrame:
         try:
             horizontal, vertical = safe_read_vibration_csv(csv_path)
             features = {}
-            features.update(channel_features(horizontal, "h"))
-            features.update(channel_features(vertical, "v"))
+            features.update(channel_features(horizontal, "h", include_wavelet=include_wavelet))
+            features.update(channel_features(vertical, "v", include_wavelet=include_wavelet))
             row_dict.update(features)
             rows.append(row_dict)
         except Exception as exc:
@@ -138,12 +204,17 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Extract vibration-derived features.")
     parser.add_argument("--metadata", default="processed/metadata.csv")
     parser.add_argument("--out", default="processed/features.csv")
+    parser.add_argument(
+        "--include_wavelet",
+        action="store_true",
+        help="Also extract db4 level-3 WPT/DWT wavelet features. Without this flag, only the 52 original time/frequency features are written.",
+    )
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
-    extract_features(args.metadata, args.out)
+    extract_features(args.metadata, args.out, include_wavelet=args.include_wavelet)
 
 
 if __name__ == "__main__":

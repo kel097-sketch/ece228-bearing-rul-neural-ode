@@ -25,10 +25,31 @@ MODEL_COLORS = {
 }
 
 
+def setup_style() -> None:
+    plt.rcParams.update(
+        {
+            "figure.dpi": 120,
+            "savefig.dpi": 300,
+            "font.size": 10,
+            "axes.titlesize": 11,
+            "axes.labelsize": 10,
+            "legend.fontsize": 8,
+            "xtick.labelsize": 9,
+            "ytick.labelsize": 9,
+            "axes.spines.top": False,
+            "axes.spines.right": False,
+            "pdf.fonttype": 42,
+            "ps.fonttype": 42,
+        }
+    )
+
+
 def save_current_figure(path: Path) -> None:
     ensure_dir(path.parent)
     plt.tight_layout()
-    plt.savefig(path, dpi=180)
+    plt.savefig(path, dpi=300)
+    if path.suffix.lower() != ".pdf":
+        plt.savefig(path.with_suffix(".pdf"))
     plt.close()
     print(f"Saved {path}")
 
@@ -152,17 +173,160 @@ def plot_bar_chart(table_path: str, out_path: str, title: str) -> None:
     if df.empty:
         print(f"Skipping bar chart; {path} is empty.")
         return
-    grouped = df.groupby("model", as_index=False)["mae"].mean()
+    grouped = (
+        df.groupby("model", as_index=False)
+        .agg(mae=("mae", "mean"), mae_std=("mae", "std"), n=("mae", "count"))
+    )
+    grouped["mae_std"] = grouped["mae_std"].fillna(0.0)
     grouped["order"] = grouped["model"].map({model: i for i, model in enumerate(MODEL_ORDER)})
     grouped = grouped.sort_values(["mae", "order"])
     colors = [MODEL_COLORS.get(model, "#777777") for model in grouped["model"]]
-    plt.figure(figsize=(8, 4.5))
-    plt.bar(grouped["model"], grouped["mae"], color=colors)
+    plt.figure(figsize=(6.8, 3.8))
+    x = np.arange(len(grouped))
+    yerr = grouped["mae_std"].to_numpy() if grouped["n"].max() > 1 else None
+    plt.bar(x, grouped["mae"], yerr=yerr, color=colors, capsize=3, edgecolor="none")
     plt.ylabel("MAE")
     plt.title(title)
-    plt.xticks(rotation=25, ha="right")
-    plt.grid(axis="y", alpha=0.25)
+    plt.xticks(x, grouped["model"], rotation=20, ha="right")
+    plt.grid(axis="y", alpha=0.18)
     save_current_figure(Path(out_path))
+
+
+def plot_line_table(
+    table_path: str,
+    x_col: str,
+    out_path: str,
+    title: str,
+    xlabel: str,
+    metric: str = "mae",
+) -> None:
+    path = Path(table_path)
+    if not path.exists():
+        print(f"Skipping line plot; missing {path}")
+        return
+    df = pd.read_csv(path)
+    if df.empty or x_col not in df.columns:
+        print(f"Skipping line plot; {path} is empty or lacks {x_col}.")
+        return
+    plt.figure(figsize=(6.4, 3.8))
+    for model, model_df in df.groupby("model", sort=False):
+        model_df = model_df.sort_values(x_col)
+        plt.plot(
+            model_df[x_col],
+            model_df[metric],
+            marker="o",
+            linewidth=1.8,
+            markersize=4,
+            label=model,
+            color=MODEL_COLORS.get(model),
+        )
+    plt.xlabel(xlabel)
+    plt.ylabel(metric.upper())
+    plt.title(title)
+    plt.grid(alpha=0.18)
+    plt.legend(frameon=False, ncol=2)
+    save_current_figure(Path(out_path))
+
+
+def plot_conformal_tradeoff() -> None:
+    path = Path("results/tables/conformal_interval_average_results.csv")
+    if not path.exists():
+        print(f"Skipping conformal plot; missing {path}")
+        return
+    df = pd.read_csv(path)
+    if df.empty:
+        print("Skipping conformal plot; table is empty.")
+        return
+    plt.figure(figsize=(5.8, 4.0))
+    for _, row in df.iterrows():
+        model = row["model"]
+        plt.scatter(
+            row["avg_interval_length"],
+            row["coverage"],
+            s=80,
+            color=MODEL_COLORS.get(model, "#777777"),
+            label=model,
+            alpha=0.9,
+        )
+        plt.text(row["avg_interval_length"], row["coverage"] + 0.006, model, fontsize=8, ha="center")
+    nominal = float(df["coverage"].mean() * 0 + 0.9)
+    plt.axhline(nominal, color="#222222", linewidth=1.0, linestyle="--", label="Nominal 90%")
+    plt.xlabel("Average interval length")
+    plt.ylabel("Empirical coverage")
+    plt.ylim(0.0, 1.05)
+    plt.title("Conformal interval tradeoff")
+    plt.grid(alpha=0.18)
+    save_current_figure(Path("results/figures/uncertainty/conformal_coverage_length_tradeoff.png"))
+
+
+def plot_top_feature_scores() -> None:
+    path = Path("results/tables/feature_scores.csv")
+    if not path.exists():
+        print(f"Skipping feature score plot; missing {path}")
+        return
+    df = pd.read_csv(path).head(20)
+    if df.empty:
+        return
+    group_colors = {"time": "#4C78A8", "frequency": "#72B7B2", "wavelet": "#F58518"}
+    plt.figure(figsize=(7.0, 5.0))
+    ordered = df.iloc[::-1]
+    colors = [group_colors.get(group, "#777777") for group in ordered["group"]]
+    plt.barh(ordered["feature"], ordered["total_score"], color=colors)
+    plt.xlabel("Feature score")
+    plt.title("Top degradation-sensitive features")
+    plt.grid(axis="x", alpha=0.18)
+    save_current_figure(Path("results/figures/feature_curves/top_feature_scores.png"))
+
+
+def plot_feature_group_sensitivity() -> None:
+    path = Path("results/tables/feature_group_sensitivity_average_results.csv")
+    if not path.exists():
+        print(f"Skipping feature group plot; missing {path}")
+        return
+    df = pd.read_csv(path)
+    if df.empty:
+        return
+    if "protocol" in df.columns:
+        cross_df = df[df["protocol"] == "cross_condition"].copy()
+        if not cross_df.empty:
+            df = cross_df
+    df = df.sort_values("mae")
+    plt.figure(figsize=(6.2, 3.8))
+    plt.bar(df["feature_group"], df["mae"], color="#4C78A8")
+    plt.ylabel("MAE")
+    plt.title("Feature group sensitivity")
+    plt.xticks(rotation=20, ha="right")
+    plt.grid(axis="y", alpha=0.18)
+    save_current_figure(Path("results/figures/bar_charts/feature_group_sensitivity_mae.png"))
+
+
+def plot_feature_setting_retraining() -> None:
+    path = Path("results/tables/selected_feature_retraining_average_results.csv")
+    if not path.exists():
+        print(f"Skipping feature-setting retraining plot; missing {path}")
+        return
+    df = pd.read_csv(path)
+    if df.empty:
+        return
+    settings = ["original", "wavelet_only", "all_expanded", "selected_top"]
+    setting_labels = ["Original", "Wavelet-only", "All-expanded", "Selected-top30"]
+    models = [model for model in MODEL_ORDER if model in set(df["model"])]
+    pivot = df.pivot_table(index="model", columns="feature_setting", values="mae", aggfunc="mean")
+    pivot = pivot.reindex(index=models, columns=settings)
+
+    values = pivot.to_numpy(dtype=float)
+    plt.figure(figsize=(7.2, 4.4))
+    image = plt.imshow(values, cmap="YlGnBu_r", aspect="auto")
+    plt.colorbar(image, label="MAE")
+    plt.xticks(np.arange(len(settings)), setting_labels, rotation=20, ha="right")
+    plt.yticks(np.arange(len(models)), models)
+    plt.title("Feature setting retraining MAE")
+    for row_idx in range(values.shape[0]):
+        for col_idx in range(values.shape[1]):
+            value = values[row_idx, col_idx]
+            if np.isfinite(value):
+                plt.text(col_idx, row_idx, f"{value:.3f}", ha="center", va="center", fontsize=8, color="#172033")
+    save_current_figure(Path("results/figures/bar_charts/selected_feature_retraining_mae_heatmap.png"))
 
 
 def parse_latent_filename(path: Path) -> tuple[str, str]:
@@ -207,6 +371,7 @@ def plot_latent_pca() -> None:
 
 
 def plot_all(features_path: str) -> None:
+    setup_style()
     plot_feature_curves(features_path)
     plot_prediction_curve()
     plot_bar_chart(
@@ -234,6 +399,31 @@ def plot_all(features_path: str) -> None:
         "results/figures/bar_charts/sparse_observation_average_mae.png",
         "Sparse-observation average MAE",
     )
+    plot_line_table(
+        "results/tables/sparse_observation_average_results.csv",
+        "keep_ratio",
+        "results/figures/robustness/sparse_observation_mae_curve.png",
+        "Sparse-observation robustness",
+        "Kept observation ratio",
+    )
+    plot_line_table(
+        "results/tables/missing_feature_robustness_average_results.csv",
+        "missing_ratio",
+        "results/figures/robustness/missing_feature_mae_curve.png",
+        "Missing-feature robustness",
+        "Missing feature ratio",
+    )
+    plot_line_table(
+        "results/tables/k_sensitivity_average_results.csv",
+        "k",
+        "results/figures/robustness/k_sensitivity_mae_curve.png",
+        "Window-length sensitivity",
+        "Sequence length K",
+    )
+    plot_conformal_tradeoff()
+    plot_top_feature_scores()
+    plot_feature_group_sensitivity()
+    plot_feature_setting_retraining()
     plot_latent_pca()
 
 

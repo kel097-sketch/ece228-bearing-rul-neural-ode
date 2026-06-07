@@ -1,0 +1,31 @@
+feature_setting,split_name,model,params,val_mae,val_rmse,val_spearman,best_epoch,num_features
+raw_waveform,cross_train_C1_C2_test_C3,Ridge,"{""alpha"": 100.0}",0.32359551414689935,0.4129450022657922,-0.14984821951633315,,512
+raw_waveform,cross_train_C1_C2_test_C3,LSTM,"{""dropout"": 0.1, ""hidden_dim"": 64, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",0.23189442539360758,0.25590869310215547,0.495351837242636,3,512
+raw_waveform,cross_train_C1_C2_test_C3,TCN,"{""dropout"": 0.1, ""hidden_dim"": 64, ""kernel_size"": 3, ""levels"": 2, ""lr"": 0.001, ""weight_decay"": 0.0001}",0.12682374347756709,0.15263997331210793,0.9080096445516062,3,512
+raw_waveform,cross_train_C1_C2_test_C3,Transformer,"{""d_model"": 64, ""dim_feedforward"": 128, ""dropout"": 0.1, ""lr"": 0.0005, ""nhead"": 4, ""num_layers"": 2, ""weight_decay"": 0.0001}",0.1640036590054679,0.20255897246211074,0.48822842476027506,4,512
+raw_waveform,cross_train_C1_C2_test_C3,latent_ode,"{""latent_dim"": 8, ""lr"": 0.001, ""smooth_weight"": 0.0001, ""weight_decay"": 0.0001}",0.24235025976247226,0.26690259233875835,0.46256891743241585,1,512
+raw_waveform,cross_train_C1_C3_test_C2,Ridge,"{""alpha"": 100.0}",0.30982057407640384,0.38144715665765316,0.0913902630741884,,512
+raw_waveform,cross_train_C1_C3_test_C2,LSTM,"{""dropout"": 0.1, ""hidden_dim"": 64, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",0.17943820897298746,0.2039899455515204,0.3507434386381755,15,512
+raw_waveform,cross_train_C1_C3_test_C2,TCN,"{""dropout"": 0.1, ""hidden_dim"": 64, ""kernel_size"": 3, ""levels"": 2, ""lr"": 0.001, ""weight_decay"": 0.0001}",0.18469685850928025,0.2158241776773834,0.29338283338283344,14,512
+raw_waveform,cross_train_C1_C3_test_C2,Transformer,"{""d_model"": 64, ""dim_feedforward"": 128, ""dropout"": 0.1, ""lr"": 0.0005, ""nhead"": 4, ""num_layers"": 2, ""weight_decay"": 0.0001}",0.07262342549000796,0.09658733489293479,0.9131593015803543,11,512
+raw_waveform,cross_train_C1_C3_test_C2,latent_ode,"{""latent_dim"": 8, ""lr"": 0.001, ""smooth_weight"": 0.0001, ""weight_decay"": 0.0001}",0.30536090922912057,0.33058639197157624,0.39417769996717367,1,512
+raw_waveform,cross_train_C2_C3_test_C1,Ridge,"{""alpha"": 100.0}",0.3203416660576544,0.39747932786170015,0.015090374830812988,,512
+raw_waveform,cross_train_C2_C3_test_C1,LSTM,"{""dropout"": 0.1, ""hidden_dim"": 64, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",0.17085915740113705,0.2168523683844506,0.34165878814806483,23,512
+raw_waveform,cross_train_C2_C3_test_C1,TCN,"{""dropout"": 0.1, ""hidden_dim"": 64, ""kernel_size"": 3, ""levels"": 2, ""lr"": 0.001, ""weight_decay"": 0.0001}",0.26710302934763297,0.3121397260186204,0.2683137030904579,15,512
+raw_waveform,cross_train_C2_C3_test_C1,Transformer,"{""d_model"": 64, ""dim_feedforward"": 128, ""dropout"": 0.1, ""lr"": 0.0005, ""nhead"": 4, ""num_layers"": 2, ""weight_decay"": 0.0001}",0.2028039121829594,0.2513142619151498,0.30411419033152837,3,512
+raw_waveform,cross_train_C2_C3_test_C1,latent_ode,"{""latent_dim"": 8, ""lr"": 0.001, ""smooth_weight"": 0.0001, ""weight_decay"": 0.0001}",0.18409393497703908,0.22300904461073587,0.7574238899793686,1,512
+wavelet_only,cross_train_C1_C2_test_C3,Ridge,"{""alpha"": 100.0}",0.32216168964417563,0.3609286221753858,0.9080865269270829,,72
+wavelet_only,cross_train_C1_C2_test_C3,LSTM,"{""dropout"": 0.1, ""hidden_dim"": 64, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",0.1049046527194337,0.11969945477969543,0.9389706552295025,1,72
+wavelet_only,cross_train_C1_C2_test_C3,TCN,"{""dropout"": 0.1, ""hidden_dim"": 64, ""kernel_size"": 3, ""levels"": 2, ""lr"": 0.001, ""weight_decay"": 0.0001}",0.11964940331587107,0.13556963433886182,0.984483605373393,1,72
+wavelet_only,cross_train_C1_C2_test_C3,Transformer,"{""d_model"": 64, ""dim_feedforward"": 128, ""dropout"": 0.1, ""lr"": 0.0005, ""nhead"": 4, ""num_layers"": 2, ""weight_decay"": 0.0001}",0.15659320696913756,0.1877485799811755,0.8050983899821109,1,72
+wavelet_only,cross_train_C1_C2_test_C3,latent_ode,"{""latent_dim"": 8, ""lr"": 0.001, ""smooth_weight"": 0.0001, ""weight_decay"": 0.0001}",0.27233499257431293,0.2998049316614259,0.6391609906776742,1,72
+wavelet_only,cross_train_C1_C3_test_C2,Ridge,"{""alpha"": 0.1}",0.40095607850822534,0.48265752415073887,0.21213316249772995,,72
+wavelet_only,cross_train_C1_C3_test_C2,LSTM,"{""dropout"": 0.1, ""hidden_dim"": 64, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",0.1606117341829798,0.1887563503256658,-0.11445859972175765,1,72
+wavelet_only,cross_train_C1_C3_test_C2,TCN,"{""dropout"": 0.1, ""hidden_dim"": 64, ""kernel_size"": 3, ""levels"": 2, ""lr"": 0.001, ""weight_decay"": 0.0001}",0.21806178794336895,0.27668036698219756,0.9851048098416519,4,72
+wavelet_only,cross_train_C1_C3_test_C2,Transformer,"{""d_model"": 64, ""dim_feedforward"": 128, ""dropout"": 0.1, ""lr"": 0.0005, ""nhead"": 4, ""num_layers"": 2, ""weight_decay"": 0.0001}",0.23088846443650815,0.2606188636791579,0.06437590858643494,1,72
+wavelet_only,cross_train_C1_C3_test_C2,latent_ode,"{""latent_dim"": 8, ""lr"": 0.001, ""smooth_weight"": 0.0001, ""weight_decay"": 0.0001}",0.16771397795623694,0.2079650155232339,-0.3806512122301596,7,72
+wavelet_only,cross_train_C2_C3_test_C1,Ridge,"{""alpha"": 100.0}",0.292807800784297,0.33376472677173374,0.41022728586855817,,72
+wavelet_only,cross_train_C2_C3_test_C1,LSTM,"{""dropout"": 0.1, ""hidden_dim"": 64, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",0.18269164910695204,0.21716470527511617,0.06312144925523672,1,72
+wavelet_only,cross_train_C2_C3_test_C1,TCN,"{""dropout"": 0.1, ""hidden_dim"": 64, ""kernel_size"": 3, ""levels"": 2, ""lr"": 0.001, ""weight_decay"": 0.0001}",0.2508085931509625,0.2888354623943719,0.5848042751288985,1,72
+wavelet_only,cross_train_C2_C3_test_C1,Transformer,"{""d_model"": 64, ""dim_feedforward"": 128, ""dropout"": 0.1, ""lr"": 0.0005, ""nhead"": 4, ""num_layers"": 2, ""weight_decay"": 0.0001}",0.17948057588965943,0.21574488987829926,0.2985702561228079,3,72
+wavelet_only,cross_train_C2_C3_test_C1,latent_ode,"{""latent_dim"": 8, ""lr"": 0.001, ""smooth_weight"": 0.0001, ""weight_decay"": 0.0001}",0.2061273486096373,0.23852948941185848,0.8935843268497199,1,72

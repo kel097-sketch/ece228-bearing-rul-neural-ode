@@ -276,12 +276,12 @@ def train_one(seq_path: Path, model_type: str) -> None:
     latent_dim = 16
     lr = 1e-3
     batch_size = 64
-    epochs = 100
-    patience = 10
+    epochs = 200
+    patience = 20
     smooth_weight = 1e-4
 
     model = LatentODERegressor(input_dim, latent_dim, model_type=model_type).to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
     loss_fn = nn.MSELoss()
     train_loader = make_loader(X_train, y_train, c_train, tau_train, batch_size, shuffle=True, device=device)
 
@@ -354,6 +354,7 @@ def train_one(seq_path: Path, model_type: str) -> None:
         "latent_dim": latent_dim,
         "conditioning": "film_encoder_ode_decoder" if model_type == "condition_aware_ode" else "none",
         "learning_rate": lr,
+        "weight_decay": 1e-4,
         "batch_size": batch_size,
         "epochs": epochs,
         "patience": patience,

@@ -1,4 +1,5 @@
 import argparse
+from pathlib import Path
 import subprocess
 import sys
 
@@ -16,6 +17,7 @@ def main():
     parser.add_argument("--skip_deep", action="store_true")
     parser.add_argument("--skip_plots", action="store_true")
     parser.add_argument("--run_sparse", action="store_true")
+    parser.add_argument("--run_advanced", action="store_true")
     args = parser.parse_args()
 
     py = sys.executable
@@ -23,6 +25,17 @@ def main():
     if not args.skip_features:
         run([py, "src/build_metadata.py", "--raw_dir", "data", "--out", "processed/metadata.csv"])
         run([py, "src/extract_features.py", "--metadata", "processed/metadata.csv", "--out", "processed/features.csv"])
+        run(
+            [
+                py,
+                "src/extract_features.py",
+                "--metadata",
+                "processed/metadata.csv",
+                "--out",
+                "processed/features_wavelet.csv",
+                "--include_wavelet",
+            ]
+        )
 
     run([py, "src/make_splits.py", "--features", "processed/features.csv", "--out_dir", "processed/splits"])
 
@@ -48,12 +61,62 @@ def main():
         run([py, "src/train_tcn.py", "--seq_dir", "processed/sequences"])
         run([py, "src/train_transformer.py", "--seq_dir", "processed/sequences"])
         run([py, "src/train_ode.py", "--seq_dir", "processed/sequences", "--model", "latent_ode"])
-        run([py, "src/train_ode.py", "--seq_dir", "processed/sequences", "--model", "condition_aware_ode"])
 
     run([py, "src/evaluate.py", "--results", "results/tables/all_results.csv"])
 
     if args.run_sparse:
         run([py, "src/sparse_observation.py", "--seq_dir", "processed/sequences"])
+
+    if args.run_advanced:
+        feature_analysis_file = (
+            "processed/features_wavelet.csv"
+            if Path("processed/features_wavelet.csv").exists()
+            else "processed/features.csv"
+        )
+        run([py, "src/feature_analysis.py", "--features", feature_analysis_file, "--split_dir", "processed/splits"])
+        run([py, "src/conformal_uncertainty.py", "--seq_dir", "processed/sequences", "--features", "processed/features.csv"])
+        run([py, "src/missing_feature_robustness.py", "--seq_dir", "processed/sequences"])
+        run(
+            [
+                py,
+                "src/k_sensitivity.py",
+                "--features",
+                "processed/features.csv",
+                "--split_dir",
+                "processed/splits",
+                "--k_values",
+                "5",
+                "10",
+                "20",
+                "--models",
+                "TCN",
+                "Transformer",
+                "latent_ode",
+                "--epochs",
+                "30",
+                "--patience",
+                "5",
+            ]
+        )
+        run(
+            [
+                py,
+                "src/multiseed_experiment.py",
+                "--seq_dir",
+                "processed/sequences",
+                "--models",
+                "TCN",
+                "latent_ode",
+                "--seeds",
+                "42",
+                "43",
+                "44",
+                "--epochs",
+                "30",
+                "--patience",
+                "5",
+            ]
+        )
 
     if not args.skip_plots:
         run([py, "src/plot_results.py", "--all"])

@@ -1,0 +1,16 @@
+split_name,model,params,val_mae,best_epoch,val_rmse,val_spearman
+cross_train_C1_C2_test_C3,Ridge,"{""alpha"": 1000.0}",0.19140253083404032,,,
+cross_train_C1_C2_test_C3,LSTM,"{""dropout"": 0.1, ""hidden_dim"": 64, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",0.10228587902043587,1.0,0.12310583126431843,0.9533009255658397
+cross_train_C1_C2_test_C3,TCN,"{""dropout"": 0.1, ""hidden_dim"": 64, ""kernel_size"": 3, ""levels"": 2, ""lr"": 0.001, ""weight_decay"": 0.0001}",0.12963950598631177,1.0,0.14900678824102878,0.962441249347215
+cross_train_C1_C2_test_C3,Transformer,"{""d_model"": 64, ""dim_feedforward"": 256, ""dropout"": 0.2, ""lr"": 0.0005, ""nhead"": 4, ""num_layers"": 2, ""weight_decay"": 0.0001}",0.0915649084480575,5.0,0.10846925690306866,0.910182557583973
+cross_train_C1_C2_test_C3,latent_ode,"{""latent_dim"": 32, ""lr"": 0.001, ""smooth_weight"": 0.0005, ""weight_decay"": 0.0001}",0.14326185521526405,22.0,0.17246573596620565,0.4738052645029388
+cross_train_C1_C3_test_C2,Ridge,"{""alpha"": 0.1}",0.40095607850822534,,,
+cross_train_C1_C3_test_C2,LSTM,"{""dropout"": 0.0, ""hidden_dim"": 32, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",0.15264033510612374,1.0,0.178822867521547,-0.14243884138620982
+cross_train_C1_C3_test_C2,TCN,"{""dropout"": 0.1, ""hidden_dim"": 64, ""kernel_size"": 3, ""levels"": 2, ""lr"": 0.001, ""weight_decay"": 0.0001}",0.1916489238227148,1.0,0.22294430882081456,0.8825016803964172
+cross_train_C1_C3_test_C2,Transformer,"{""d_model"": 64, ""dim_feedforward"": 128, ""dropout"": 0.1, ""lr"": 0.001, ""nhead"": 4, ""num_layers"": 1, ""weight_decay"": 0.0001}",0.15496148452449304,1.0,0.1883434853520476,0.1552734747471589
+cross_train_C1_C3_test_C2,latent_ode,"{""latent_dim"": 8, ""lr"": 0.001, ""smooth_weight"": 0.0001, ""weight_decay"": 0.0001}",0.15488836386073856,14.0,0.19316401656567997,0.1310929610929611
+cross_train_C2_C3_test_C1,Ridge,"{""alpha"": 1000.0}",0.2700079233018935,,,
+cross_train_C2_C3_test_C1,LSTM,"{""dropout"": 0.0, ""hidden_dim"": 32, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",0.1848022913762058,2.0,0.2112740995400026,0.18646661713342572
+cross_train_C2_C3_test_C1,TCN,"{""dropout"": 0.2, ""hidden_dim"": 128, ""kernel_size"": 5, ""levels"": 3, ""lr"": 0.0005, ""weight_decay"": 0.0001}",0.2346816899579608,1.0,0.26824480830259173,0.9846550978747242
+cross_train_C2_C3_test_C1,Transformer,"{""d_model"": 64, ""dim_feedforward"": 128, ""dropout"": 0.1, ""lr"": 0.0005, ""nhead"": 4, ""num_layers"": 2, ""weight_decay"": 0.0001}",0.1818737284420058,1.0,0.22286960498745595,0.052249958285728926
+cross_train_C2_C3_test_C1,latent_ode,"{""latent_dim"": 8, ""lr"": 0.001, ""smooth_weight"": 0.0001, ""weight_decay"": 0.0001}",0.1868744370295705,1.0,0.22314971771581488,0.9027321880943295
