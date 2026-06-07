@@ -65,16 +65,6 @@ Key findings:
 - TCN achieves the best MAE and RMSE in the main wavelet setting.
 - Compact feature selection reduces redundancy, but more selected features do not always improve performance.
 
-## Repository Structure
-
-```text
-src/                         Source code
-results/tables/              Result tables
-RUL_XJTU_NeurIPS_Final/      Final report source and figures
-RUL_Paper_Results_Assets/    Curated result figures and tables
-data/                        Raw dataset folder, not included
-processed/                   Generated features and sequences, mostly not tracked
-```
 
 ## Setup
 
