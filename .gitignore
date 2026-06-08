@@ -2,13 +2,28 @@
 .uv-cache/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.pytest_cache/
 
 data/
-processed/sequences/
+processed/
 
-results/checkpoints/
-results/latent/
-results/predictions/
+results/*
+!results/final_tables/
+!results/final_tables/**
+
+*.zip
+*.html
+/*.png
+
+docs/
+RUL_Paper_Results_Assets/
+RUL_XJTU_HTML_PPT_Share/
+RUL_XJTU_Key_Figures/
+RUL_XJTU_PPT_Curated_Share/
+RUL_XJTU_PPT_Package_2026_05_28/
+overleaf_rul_paper/
 
 .DS_Store
 Thumbs.db

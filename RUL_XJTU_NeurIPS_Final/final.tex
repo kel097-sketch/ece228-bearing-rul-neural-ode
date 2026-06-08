@@ -1,0 +1,465 @@
+\documentclass{article}
+
+
+% if you need to pass options to natbib, use, e.g.:
+%     \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2022
+
+
+% ready for submission
+\PassOptionsToPackage{numbers,sort&compress}{natbib}
+\usepackage[preprint]{neurips_2026}
+\makeatletter
+\renewcommand{\@noticestring}{}
+\makeatother
+
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+%     \usepackage[preprint]{neurips_2022}
+
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+%     \usepackage[final]{neurips_2022}
+
+\usepackage{placeins}
+% to avoid loading the natbib package, add option nonatbib:
+%    \usepackage[nonatbib]{neurips_2022}
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{amsmath}        % for \text and other math features
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+\newcommand{\new}[1]{{\color{red} #1}}
+\usepackage{graphicx}
+\raggedbottom
+\title{Bearing Remaining Useful Life Prediction
+from Vibration Signals}
+
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
+
+
+\author{%
+  \begin{tabular}{cc}
+  Ke Liu & Jianye Wang \\
+  \texttt{kel097@ucsd.edu} & \texttt{jiw265@ucsd.edu} \\
+  University of California, San Diego & University of California, San Diego \\
+  \\
+  Teng Teng & Chutian Gong \\
+  \texttt{teteng@ucsd.edu} & \texttt{c3gong@ucsd.edu} \\
+  University of California, San Diego & University of California, San Diego \\
+  \\[0.8em]
+  \multicolumn{2}{c}{Team 27}
+  \end{tabular}
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \AND
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+}
+
+
+\begin{document}
+
+
+\maketitle
+
+\begin{abstract}
+Remaining Useful Life (RUL) prediction of bearing is crucial for maintenance purposes and safety concerns, but remains challenging for unseen operating conditions. This research focuses on the prediction of bearing RUL from XJTU SY dataset via utilizing vibration features extracted from time, frequency, and wavelet domain. We compare Ridge regression, LSTM, TCN, Transformer, and Latent ODE. The findings suggest that TCN outperforms the rest in terms of both MAE and RMSE metrics, and using wavelet features helps improve the predictive ability.
+\end{abstract}
+
+\section{Introduction}
+
+Rolling bearings are critical components in motors, aerospace systems, machine tools, and transportation systems. However, their degradation can trigger unexpected downtime, increased maintenance cost, and safety risks \cite{jardine2006review}. As a result, predicting the Bearing remaining useful life (RUL) prediction is an important problem in prognostics and health management.
+
+Vibration signals, time-series measurements of bearing vibrations, provide important physical information about bearing health \cite{randall2011rolling,nectoux2012pronostia}.
+when a bearing degrades, its vibration pattern could change, including increased vibration amplitude, stronger impulsive components, and changes in frequency domain energy distribution.
+
+Bearing RUL prediction is challenging because vibration signals are often noisy. In addition, these signals are affected by both degradation processes and operating conditions, including rotational speed and load \cite{hu2022remaining}.
+
+In our project, we aim to build an effective model that learns degradation-sensitive and condition-invariant features instead of memorizing condition-specific signal patterns. We also want the model to identify which physical features are most related to bearing degradation, so that the results can provide useful guidance for bearing maintenance and design improvement.
+
+\section{Related Work}
+\subsection{Bearing RUL Prediction}
+Bearing fault prediction has been carried out by combining signal processing features and machine learning techniques. In traditional bearing vibration analysis, time-domain features, frequency-domain features, and wavelet transformations have been applied to represent the amplitude variation, impulses, and band energies \citep{randall2011rolling,daubechies1988orthonormal}. Modern RUL prediction methods have incorporated feature extraction into deep learning architectures for modeling time-series dynamics \citep{wang2018hybrid,dhungana2026remaining}.
+
+\subsection{Sequential Models}
+Sequential models are often used for modeling sequential dynamics of degradation process. Recurrent LSTM architectures leverage recurrence structure to model long range dependencies \citep{graves2012long}. Convolutional Temporal Neural Networks use convolutions as an alternative technique for modeling sequences \citep{bai2018empirical}.Transformer architectures use self-attention for modeling dependencies across a window of sequence elements \citep{vaswani2017attention}. Latent ODEs can be considered a continuous-time counterpart of sequence modeling techniques \citep{chen2018neural}. While other works have mostly focused on the evaluation of within condition interpolation, this work is mainly concerned with cross condition generalization.
+
+\section{Method}
+
+We propose a framework based on features selection to predict the remaining useful life (RUL) of rolling bearings . According to Figure~\ref{fig:pipeline}, the process begins by transforming raw horizontal and vertical vibration measurement data into feature representations in the time, frequency, and wavelet domains. Subsequently, these features are organized into various feature configurations, including raw vibration features, time \& frequency features and wavelet-only features selected through feature screening during the training phase. For neural sequence models, each operational trajectory from normal to failure is further converted into fixed-length time windows to enable the models to capture historical degradation patterns. We use classical ridge regression as a baseline and compare it with various neural sequence models, including LSTM, TCN, Transformer, and Latent ODE. Finally, model selection and evaluation are conducted under a cross-condition protocol, meaning that models are tested on unknown operating conditions that were not previously utilized during preprocessing, feature selection, or hyperparameter tuning.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/pipeline.png}
+    \caption{
+    Pipeline.
+    }
+    \label{fig:pipeline}
+\end{figure}
+\subsection{Dataset}
+
+We use the XJTU-SY rolling bearing accelerated life test dataset \cite{lei2019xjtu} as a standard benchmark.
+The dataset comprises 15 run-to-failure trajectories sampled under three operating conditions with five bearings for each condition.
+As shown in Table~\ref{tab:xjtu_conditions}, the operating conditions differ in terms of rotational speed and radial load, which triggers distinct degradation trajectories under three different operating conditions.
+
+\begin{table}[ht]
+\centering
+\caption{Operating conditions in the XJTU-SY dataset.}
+\label{tab:xjtu_conditions}
+\begin{tabular}{cccc}
+\hline
+Condition & Speed & Load & Bearing trajectories \\
+\hline
+C1 & 35 Hz & 12 kN & 5 trajectories: B1-1 to B1-5 \\
+C2 & 37.5 Hz & 11 kN & 5 trajectories: B2-1 to B2-5 \\
+C3 & 40 Hz & 10 kN & 5 trajectories: B3-1 to B3-5 \\
+\hline
+\end{tabular}
+\end{table}
+
+
+Each trace contains vibration data recorded prior to bearing failure.
+Each measurement includes horizontal and vertical acceleration signals, sampled at 25.6 kHz, with 32,768 data points collected every 1.28 seconds at one-minute intervals.
+We use only features extracted from the vibration data in the two acceleration channels.
+
+As shown in Figure~\ref{fig:example_vibration_signals}, the vibration amplitude becomes more pronounced near the end of the trajectory. It indicates that the original signal contains useful degradation information that can be used for remaining useful life (RUL) prediction.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/example_vibration_signals.png}
+    \caption{
+    The example horizontal and vertical signals show increasing vibration amplitude near failure.
+    }
+    \label{fig:example_vibration_signals}
+\end{figure}
+
+
+\subsection{Problem Formulation}
+
+We treat each bearing as a run-to-failure trajectory.
+For trajectory $b$, let $N_b$ denote the number of measurements, and let $\mathbf{x}_{b,t}\in\mathbb{R}^{d}$ be the vibration-derived feature vector at time $t\in\{0,\ldots,N_b-1\}$.
+The normalized remaining useful life (RUL) target is defined as
+\[
+y_{b,t}=\frac{N_b-1-t}{N_b-1}.
+\]
+
+The prediction task is to learn a mapping from vibration to normalized RUL:
+\[
+\hat{y}_{b,t}=f_{\theta}(\mathbf{X}_{b,t}),
+\]
+where $\mathbf{X}_{b,t}$ denotes a temporal feature window and $\theta$ denotes model parameters.
+
+\subsection{Vibration Feature Extraction}
+
+For each vibration measurement, we extract representations from the horizontal and vertical acceleration channels and concatenate them into a single feature vector.
+We consider four input representations: raw signal, time-domain features, frequency-domain features, and wavelet-domain features.
+
+\subsubsection{Raw Signal Representation}
+
+For the raw signal representation, the horizontal and vertical vibration signals are downsampled to a fixed length and concatenated.
+This representation preserves the waveform shape, but it does not explicitly encode statistical or spectral structure.
+
+\subsubsection{Time and Frequency Domain Features}
+
+Time-domain features summarize the amplitude statistics and impulse characteristics of the vibration signal.
+For each channel, we compute 14 statistics, including root mean square (RMS), standard deviation, peak-to-peak value, skewness, kurtosis, energy, crest factor, impulse factor, and shape factor, resulting in 28 time-domain features across the two channels.
+Frequency-domain features describe the spectral distribution of vibration energy.
+For each channel, we compute 12 descriptors, including spectral energy, spectral centroid, spectral entropy, dominant frequency, band energy, and band energy ratio, resulting in 24 frequency-domain features across the two channels.
+
+\subsubsection{Wavelet Domain Features}
+
+Wavelet-domain features describe how vibration energy is distributed across decomposed frequency bands during bearing operation.
+We use the Daubechies-4 wavelet~\cite{daubechies1988orthonormal} with three decomposition levels.
+The level-3 Wavelet Packet Transform (WPT) produces eight terminal frequency bands, and we extract energy, RMS, and energy ratio from each band.
+We also compute Discrete Wavelet Transform (DWT) coefficient statistics from $cA_3$, $cD_3$, $cD_2$, and $cD_1$, using mean, variance, and energy for each coefficient group.
+Across the horizontal and vertical channels, this gives 72 wavelet-domain features in total.
+
+The resulting feature groups are summarized in Table~\ref{tab:feature_groups}.
+\begin{table}[ht]
+\centering
+\caption{Vibration feature groups used in this study.}
+\label{tab:feature_groups}
+\begin{tabular}{c c p{7.2cm}}
+\hline
+Feature group & Dim. & Feature types \\
+\hline
+Raw & 2 &  horizontal and vertical vibration signals \\
+Time-domain & 28 & RMS, standard deviation, peak-to-peak value ... \\
+Frequency-domain & 24 & Spectral energy, spectral center of mass... \\
+Wavelet-domain & 72 & Daubechies-4 three-level WPT and DWT features... \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\subsection{Sequence Construction}
+For ridge regression, each prediction uses the current feature vector $\mathbf{x}_{b,t}$ directly, without the need to construct a time series.
+For neural sequence models, we construct time windows of fixed length from each bearing trajectory.
+Given a sequence length $K$, the input window at time $t$ is defined as\[
+\mathbf{X}_{b,t} =
+[\mathbf{x}_{b,t-K+1}, \mathbf{x}_{b,t-K+2}, \ldots, \mathbf{x}_{b,t}]\]
+The prediction target at the final time step is $y_{b,t}$.
+Sequences within each bearing trajectory are generated independently.
+We do not allow windows to span trajectory boundaries.
+This prevents measurement data from different bearings from being mixed within the same input sequence.
+The sequence length $K$ determines the amount of historical information the model can access.
+A larger $K$ provides a longer history, but may exclude short-duration trajectories with insufficient measurements to form a complete window.
+Therefore, $K$ is determined by evaluating performance and checking trajectory coverage.
+
+\subsection{Prediction Models}
+
+We compare five predictive models.
+The ridge regression, a classical model, is applied to map the current feature vector $\mathbf{x}_{b,t}$ to RUL normalization.
+The other models are neural sequential models based on the time-window feature vector $\mathbf{X}_{b,t}$.
+LSTM utilizes recurrent hidden layers \citep{graves2012long}.
+TCN exploits 1D convolutions over feature windows to detect local dependencies in a sequence \citep{bai2018empirical}.
+Transformers employ positional encodings within a self-attention layer to model global dependencies in a sequence \citep{vaswani2017attention}.
+Latent ODEs act as a baseline of continuous-time sequences, whose hidden dynamics can be approximated using neural ordinary differential equations \citep{chen2018neural}.
+Each neural sequence model takes a temporal feature window as input and outputs one scalar RUL prediction for the final time step.
+
+\subsection{Training, Validation, and Model Selection}
+
+All preprocessing steps are performed separately within each dataset split. Feature scaling parameters are fitted only on the training trajectories and then applied to the validation and test trajectories. For Ridge regression, the regularization strength is selected based on validation MAE. For neural sequence models, we use the Adam optimizer and apply early stopping based on validation error. The checkpoint with the best validation performance is then evaluated on the test condition. The test condition is used only once, after all preprocessing and model selection decisions have been fixed.
+
+\subsection{Evaluation Protocol}
+\label{sec:evaluation_protocol}
+We use a leave one condition out protocol for cross condition evaluation, as illustrated in Figure~\ref{fig:cross_condition_split}.
+In each split, two operating conditions are used for training and validation, while the remaining condition is used for testing.
+Under the training conditions, trajectories 1--4 are used as training data and trajectory 5 is used as validation data.
+The test condition contains all five bearing trajectories.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/split.png}
+    \caption{
+    Leave-one-condition-out cross-condition evaluation protocol.
+    Blue bearings are used for training, orange bearings for validation, and red bearings for testing.
+    }
+    \label{fig:cross_condition_split}
+\end{figure}
+
+We report mean absolute error (MAE), root mean squared error (RMSE), and Spearman correlation.
+MAE measures average absolute prediction error, RMSE penalizes larger errors, and Spearman correlation measures whether the predicted RUL follows the correct ranking trend over the bearing lifetime.
+Metrics are computed for each test bearing first and then averaged across bearings and cross-condition splits.
+
+For a test bearing with $n$ prediction points, the MAE and RMSE are computed as
+\[
+\mathrm{MAE}=\frac{1}{n}\sum_{i=1}^{n}\left|y_i-\hat{y}_i\right|,
+\quad
+\mathrm{RMSE}=\sqrt{\frac{1}{n}\sum_{i=1}^{n}\left(y_i-\hat{y}_i\right)^2}.
+\]
+Spearman correlation is computed as the Pearson correlation between the rank variables:
+\[
+\rho_s =
+\frac{\sum_{i=1}^{n}(r_i-\bar{r})(\hat{r}_i-\bar{\hat{r}})}
+{\sqrt{\sum_{i=1}^{n}(r_i-\bar{r})^2}
+\sqrt{\sum_{i=1}^{n}(\hat{r}_i-\bar{\hat{r}})^2}},
+\]
+where $r_i=\mathrm{rank}(y_i)$ and $\hat{r}_i=\mathrm{rank}(\hat{y}_i)$.
+
+
+\section{Results and Analysis}
+
+\subsection{Experimental Setup}
+
+We evaluate all models on the XJTU-SY dataset using the cross condition protocol described in Section~\ref{sec:evaluation_protocol}.
+Unless otherwise specified, the main sequence experiments use wavelet features and a time window length of $K=40$.
+Ridge regression uses only the current feature vector and therefore does not involve a sequence length. The hyperparameter search space is provided in Table~\ref{tab:hyperparameters}:
+
+\begin{table}[ht]
+\centering
+\small
+\caption{Hyperparameter search space. All selections are made using validation trajectories only.}
+\label{tab:hyperparameters}
+\begin{tabular}{lll}
+\hline
+Model & Hyperparameter & Values \\
+\hline
+Ridge & $\alpha$ & $\{10^{-3},10^{-2},10^{-1},1,10,100,1000\}$ \\
+LSTM & hidden dim, layers & $\{32,64,128\}$, $\{1,2\}$ \\
+LSTM & dropout & $\{0.0,0.1,0.2\}$ \\
+TCN & hidden dim, levels & $\{32,64,128\}$, $\{2,3\}$ \\
+TCN & kernel size, dropout & $\{3,5\}$, $\{0.1,0.2\}$ \\
+Transformer & model dim, heads & $\{32,64,128\}$, $\{2,4\}$ \\
+Transformer & layers, FF dim & $\{1,2\}$, $\{64,128,256\}$ \\
+Latent ODE & latent dim & $\{8,16,32\}$ \\
+Latent ODE & smoothness weight & $\{10^{-4},5\times10^{-4}\}$ \\
+Sequential models & learning rate & $\{10^{-3},5\times10^{-4}\}$ \\
+Sequential models & weight decay & $\{10^{-4},10^{-3}\}$ \\
+Sequential models & batch size, max epochs, patience & $64$, $80$, $10$ \\
+\hline
+\end{tabular}
+\end{table}
+
+
+
+\subsection{Feature Selection}
+
+We first evaluate the effect of feature representation on cross condition prediction. We use Ridge regression for the selection process.
+
+\begin{figure}[!tbp]
+    \centering
+    \includegraphics[width=0.72\textwidth]{figures/ridge.png}
+    \caption{
+    Feature setting ablation using Ridge regression.
+    Lower MAE is better.
+    Compact train only feature screening improves over the fully expanded feature set.
+    }
+    \label{fig:feature_ablation}
+\end{figure}
+Figure~\ref{fig:feature_ablation} compares the raw signal, time-domain, frequency-domain, and wavelet-domain feature settings. The four feature representations produce different MAE values and we found that some vibration-derived-features produce lower MAE than raw signal. The result suggests that derived-feature representations have substantial effect on bearing RUL prediction. Also, wavelet features achieving the lowest MAE.
+Therefore, we focus the main experiments on wavelet features to evaluate the effectiveness of wavelet-based vibration representations for RUL prediction.
+
+\subsection{Sequence Length Selection}
+\label{sec:k_selection}
+
+The value of K defines how much history the neural network can use for training.   Large windows give more context, but small trajectories cannot be included in such cases.   Thus, the value of K will be chosen after analyzing MAE and trajectory coverage.
+
+
+
+
+\begin{figure}[!tbp]
+    \centering
+    \includegraphics[width=0.72\textwidth]{figures/k_selection_accuracy_vs_k.png}
+    \caption{
+    Validation MAE under different sequence lengths $K$ for wavelet based sequence models.
+    }
+    \label{fig:k_selection_accuracy}
+\end{figure}
+
+\begin{figure}[!tbp]
+    \centering
+    \includegraphics[width=0.72\textwidth]{figures/k_selection_coverage_check.png}
+    \caption{
+    Minimum bearing coverage under different sequence lengths $K$ for training, validation, and test trajectories.
+    }
+    \label{fig:k_selection_coverage}
+\end{figure}
+
+\FloatBarrier
+According to Figure~\ref{fig:k_selection_accuracy} and Figure~\ref{fig:k_selection_coverage}, increasing the window size can decrease the validation error, but it also decreases trajectory coverage. This creates a problem for cross condition analysis because short lifetime bearings may not be included when they cannot form complete sequences. Thus, we use $K=40$ as the main configuration because it preserves all trajectories.
+
+\subsection{Main Cross Condition Results}
+
+
+The results of the cross-validation for different representation methods are shown in Table ~\ref{tab:representation_results}.
+
+Across the compared models, TCN achieved the lowest MAE and RMSE, indicating that time convolution is effective for predicting remaining useful life (RUL) under unseen operating conditions. Compared to using raw signals, wavelet features improve prediction performance. Among the tested representations, the wavelet setting achieves the lowest error, with the TCN yielding an MAE of 0.166 and an RMSE of 0.204.
+
+\begin{table}[ht]
+    \centering
+    \small
+    \caption{
+    Cross condition results under different input representations.
+    }
+    \label{tab:representation_results}
+    \begin{tabular}{llccc}
+        \toprule
+        Feature setting & Model & MAE $\downarrow$ & RMSE $\downarrow$ & Spearman $\uparrow$ \\
+        \midrule
+
+        {Raw signal}
+        & TCN & $\mathbf{0.194}$ & $\mathbf{0.232}$ & $\mathbf{0.454}$ \\
+        & Transformer & $0.223$ & $0.273$ & $0.413$ \\
+        & Latent ODE & $0.225$ & $0.257$ & $0.199$ \\
+        & LSTM & $0.227$ & $0.262$ & $0.296$ \\
+        & Ridge & $0.275$ & $0.338$ & $0.013$ \\
+
+        \midrule
+        {Time}
+        & LSTM & $\mathbf{0.199}$ & $\mathbf{0.231}$ & $0.367$ \\
+        & Transformer & $0.204$ & $0.234$ & $0.321$ \\
+        & Latent ODE & $0.206$ & $0.245$ & $0.344$ \\
+        & TCN & $0.230$ & $0.270$ & $0.395$ \\
+        & Ridge & $0.247$ & $0.288$ & $\mathbf{0.439}$ \\
+
+        \midrule
+        {Frequency}
+        & Transformer & $\mathbf{0.185}$ & $\mathbf{0.219}$ & $\mathbf{0.731}$ \\
+        & LSTM & $0.194$ & $0.230$ & $0.538$ \\
+        & TCN & $0.237$ & $0.278$ & $0.678$ \\
+        & Latent ODE & $0.260$ & $0.296$ & $0.480$ \\
+        & Ridge & $0.260$ & $0.310$ & $0.436$ \\
+
+        \midrule
+        {Wavelet}
+        & TCN & $\mathbf{0.166}$ & $\mathbf{0.204}$ & $\mathbf{0.669}$ \\
+        & LSTM & $0.173$ & $0.204$ & $0.456$ \\
+        & Transformer & $0.211$ & $0.246$ & $0.395$ \\
+        & Latent ODE & $0.246$ & $0.280$ & $0.346$ \\
+        & Ridge & $0.252$ & $0.300$ & $0.444$ \\
+
+        \bottomrule
+    \end{tabular}
+\end{table}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.55\textwidth]{figures/heatmap.png}
+    \caption{
+    Cross condition prediction results.
+    }
+    \label{fig:main_cross_results}
+\end{figure}
+According to Fig ~\ref{fig:main_cross_results} Performance varies across held out conditions. Several models show larger errors on C3. It suggests that C3 is the hardest condition to predict and operating condition shift changes prediction difficulty. This supports condition level evaluation instead of random window level splitting.
+
+
+
+\subsection{Analysis}
+
+Three main findings are derived from the experiments.
+First, differences in operating conditions are a major challenge for bearing RUL prediction, since model performance varies across different test conditions.
+Second, feature selection is important. To be more specific, the Ridge regression ablation suggests that selected features can reduce redundancy, while the wavelet based experiments show that frequency band energy information helps time series prediction.
+Third, time series models perform better than the Ridge regression baseline.
+In terms of point accuracy, TCN achieves the best performance. However, Transformer show better global trend preservation according to Spearman rank correlation.
+
+
+\section{Conclusion}
+
+In this project, we study bearing RUL prediction under unseen operating conditions. The experimental results show that derived vibration features are useful and can outperform raw signals, with wavelet-domain features providing the most effective representation among the tested feature groups. Sequential models also perform better than the Ridge regression baseline, indicating that temporal degradation history is important for RUL prediction. Among the evaluated models, TCN achieves the best MAE and RMSE. The best overall setting combines wavelet features with the TCN model, reaching an MAE of 0.166 and an RMSE of 0.204. Although cross-condition prediction remains challenging, this wavelet-TCN setting improves performance under unseen operating conditions and helps mitigate, but does not completely eliminate, the effect of condition shift.
+
+
+\section{Code \& GitHub}
+
+The code for this project is available at:
+
+\url{https://github.com/kel097-sketch/ece228-bearing-rul-neural-ode}
+
+\section{Team Member Contribution}
+All team members discussed the project design, reviewed the experimental results, and equally contributed to the final project presentation and report.
+
+\appendix
+
+
+
+\FloatBarrier
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+\end{document}

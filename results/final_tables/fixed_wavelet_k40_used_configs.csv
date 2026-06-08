@@ -1,0 +1,61 @@
+feature_setting,split_name,model,params,best_epoch,val_mae,val_rmse,val_spearman,num_features
+time,cross_train_C1_C2_test_C3,Ridge,"{""alpha"": 1000.0}",,,,,28
+time,cross_train_C1_C2_test_C3,LSTM,"{""dropout"": 0.1, ""hidden_dim"": 64, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",1,0.10612571054269584,0.1238175203089755,0.96732697029967,28
+time,cross_train_C1_C2_test_C3,TCN,"{""dropout"": 0.1, ""hidden_dim"": 64, ""kernel_size"": 3, ""levels"": 2, ""lr"": 0.001, ""weight_decay"": 0.0001}",1,0.0970206481202816,0.12095414251764144,0.9639733774819719,28
+time,cross_train_C1_C2_test_C3,Transformer,"{""d_model"": 64, ""dim_feedforward"": 256, ""dropout"": 0.2, ""lr"": 0.0005, ""nhead"": 4, ""num_layers"": 2, ""weight_decay"": 0.0001}",1,0.12296117514861413,0.1440156318637063,0.8822399137768198,28
+time,cross_train_C1_C2_test_C3,latent_ode,"{""latent_dim"": 32, ""lr"": 0.001, ""smooth_weight"": 0.0005, ""weight_decay"": 0.0001}",2,0.2622917803282587,0.2894375539086709,0.5862412915699062,28
+time,cross_train_C1_C3_test_C2,Ridge,"{""alpha"": 0.1}",,,,,28
+time,cross_train_C1_C3_test_C2,LSTM,"{""dropout"": 0.0, ""hidden_dim"": 32, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",1,0.16841911930972947,0.20248034032210463,0.13945133103027843,28
+time,cross_train_C1_C3_test_C2,TCN,"{""dropout"": 0.1, ""hidden_dim"": 64, ""kernel_size"": 3, ""levels"": 2, ""lr"": 0.001, ""weight_decay"": 0.0001}",3,0.14815482840352417,0.179346851520243,0.6678939552623764,28
+time,cross_train_C1_C3_test_C2,Transformer,"{""d_model"": 64, ""dim_feedforward"": 128, ""dropout"": 0.1, ""lr"": 0.001, ""nhead"": 4, ""num_layers"": 1, ""weight_decay"": 0.0001}",1,0.15156831332601797,0.1855751655046656,-0.4278394009972958,28
+time,cross_train_C1_C3_test_C2,latent_ode,"{""latent_dim"": 8, ""lr"": 0.001, ""smooth_weight"": 0.0001, ""weight_decay"": 0.0001}",8,0.22599232437327887,0.262600866194963,-0.006054898160161319,28
+time,cross_train_C2_C3_test_C1,Ridge,"{""alpha"": 1000.0}",,,,,28
+time,cross_train_C2_C3_test_C1,LSTM,"{""dropout"": 0.0, ""hidden_dim"": 32, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",4,0.24897411982684087,0.28710552975857456,-0.051508456147379006,28
+time,cross_train_C2_C3_test_C1,TCN,"{""dropout"": 0.2, ""hidden_dim"": 128, ""kernel_size"": 5, ""levels"": 3, ""lr"": 0.0005, ""weight_decay"": 0.0001}",15,0.2500045603885277,0.2899530861497804,0.9173390810711869,28
+time,cross_train_C2_C3_test_C1,Transformer,"{""d_model"": 64, ""dim_feedforward"": 128, ""dropout"": 0.1, ""lr"": 0.0005, ""nhead"": 4, ""num_layers"": 2, ""weight_decay"": 0.0001}",1,0.21913195800812293,0.2681314643904744,-0.05398768695027539,28
+time,cross_train_C2_C3_test_C1,latent_ode,"{""latent_dim"": 8, ""lr"": 0.001, ""smooth_weight"": 0.0001, ""weight_decay"": 0.0001}",12,0.20031209538613137,0.2524075550255982,0.4449575562693544,28
+frequency,cross_train_C1_C2_test_C3,Ridge,"{""alpha"": 1000.0}",,,,,24
+frequency,cross_train_C1_C2_test_C3,LSTM,"{""dropout"": 0.1, ""hidden_dim"": 64, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",34,0.12379859262432616,0.16548167833499222,0.9821393571039678,24
+frequency,cross_train_C1_C2_test_C3,TCN,"{""dropout"": 0.1, ""hidden_dim"": 64, ""kernel_size"": 3, ""levels"": 2, ""lr"": 0.001, ""weight_decay"": 0.0001}",1,0.10622291291889013,0.1314788635598803,0.9932872587473194,24
+frequency,cross_train_C1_C2_test_C3,Transformer,"{""d_model"": 64, ""dim_feedforward"": 256, ""dropout"": 0.2, ""lr"": 0.0005, ""nhead"": 4, ""num_layers"": 2, ""weight_decay"": 0.0001}",1,0.13328213152320434,0.14973220657991423,0.9795684396493294,24
+frequency,cross_train_C1_C2_test_C3,latent_ode,"{""latent_dim"": 32, ""lr"": 0.001, ""smooth_weight"": 0.0005, ""weight_decay"": 0.0001}",3,0.3874910041597935,0.3980267472479096,0.31704863387370963,24
+frequency,cross_train_C1_C3_test_C2,Ridge,"{""alpha"": 0.1}",,,,,24
+frequency,cross_train_C1_C3_test_C2,LSTM,"{""dropout"": 0.0, ""hidden_dim"": 32, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",1,0.14091994064454083,0.16697379269884086,0.30249511512669414,24
+frequency,cross_train_C1_C3_test_C2,TCN,"{""dropout"": 0.1, ""hidden_dim"": 64, ""kernel_size"": 3, ""levels"": 2, ""lr"": 0.001, ""weight_decay"": 0.0001}",10,0.16756348730015108,0.1927327689207597,0.9112517780938834,24
+frequency,cross_train_C1_C3_test_C2,Transformer,"{""d_model"": 64, ""dim_feedforward"": 128, ""dropout"": 0.1, ""lr"": 0.001, ""nhead"": 4, ""num_layers"": 1, ""weight_decay"": 0.0001}",1,0.14356972716271113,0.17380761016788585,0.20841933315617522,24
+frequency,cross_train_C1_C3_test_C2,latent_ode,"{""latent_dim"": 8, ""lr"": 0.001, ""smooth_weight"": 0.0001, ""weight_decay"": 0.0001}",31,0.2189025137735865,0.25001364825237987,0.06108498897972578,24
+frequency,cross_train_C2_C3_test_C1,Ridge,"{""alpha"": 1000.0}",,,,,24
+frequency,cross_train_C2_C3_test_C1,LSTM,"{""dropout"": 0.0, ""hidden_dim"": 32, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",20,0.2451831756144141,0.28820870373170776,0.3332201470485755,24
+frequency,cross_train_C2_C3_test_C1,TCN,"{""dropout"": 0.2, ""hidden_dim"": 128, ""kernel_size"": 5, ""levels"": 3, ""lr"": 0.0005, ""weight_decay"": 0.0001}",2,0.2724591638603761,0.30283085872807364,0.9936945893361198,24
+frequency,cross_train_C2_C3_test_C1,Transformer,"{""d_model"": 64, ""dim_feedforward"": 128, ""dropout"": 0.1, ""lr"": 0.0005, ""nhead"": 4, ""num_layers"": 2, ""weight_decay"": 0.0001}",15,0.2082337226951495,0.24302813633207698,0.9123981497692316,24
+frequency,cross_train_C2_C3_test_C1,latent_ode,"{""latent_dim"": 8, ""lr"": 0.001, ""smooth_weight"": 0.0001, ""weight_decay"": 0.0001}",17,0.15690231759139958,0.1810381540772737,0.8997238660641352,24
+wavelet_only,cross_train_C1_C2_test_C3,Ridge,"{""alpha"": 1000.0}",,,,,72
+wavelet_only,cross_train_C1_C2_test_C3,LSTM,"{""dropout"": 0.1, ""hidden_dim"": 64, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",1,0.11013526349603078,0.13031619872940864,0.9266386293181035,72
+wavelet_only,cross_train_C1_C2_test_C3,TCN,"{""dropout"": 0.1, ""hidden_dim"": 64, ""kernel_size"": 3, ""levels"": 2, ""lr"": 0.001, ""weight_decay"": 0.0001}",1,0.11726121668588371,0.13153835222738297,0.9802541139345993,72
+wavelet_only,cross_train_C1_C2_test_C3,Transformer,"{""d_model"": 64, ""dim_feedforward"": 256, ""dropout"": 0.2, ""lr"": 0.0005, ""nhead"": 4, ""num_layers"": 2, ""weight_decay"": 0.0001}",6,0.16428349109521756,0.18912995804801927,0.8207191191013233,72
+wavelet_only,cross_train_C1_C2_test_C3,latent_ode,"{""latent_dim"": 32, ""lr"": 0.001, ""smooth_weight"": 0.0005, ""weight_decay"": 0.0001}",46,0.13143349463991727,0.16435312709142152,0.2592714363492927,72
+wavelet_only,cross_train_C1_C3_test_C2,Ridge,"{""alpha"": 0.1}",,,,,72
+wavelet_only,cross_train_C1_C3_test_C2,LSTM,"{""dropout"": 0.0, ""hidden_dim"": 32, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",1,0.15319486023237308,0.1849578973551229,0.02927485032748195,72
+wavelet_only,cross_train_C1_C3_test_C2,TCN,"{""dropout"": 0.1, ""hidden_dim"": 64, ""kernel_size"": 3, ""levels"": 2, ""lr"": 0.001, ""weight_decay"": 0.0001}",1,0.19573561780823345,0.22719242500752163,0.43064011379800854,72
+wavelet_only,cross_train_C1_C3_test_C2,Transformer,"{""d_model"": 64, ""dim_feedforward"": 128, ""dropout"": 0.1, ""lr"": 0.001, ""nhead"": 4, ""num_layers"": 1, ""weight_decay"": 0.0001}",12,0.17350405199118915,0.23527111741261228,0.1625585794006847,72
+wavelet_only,cross_train_C1_C3_test_C2,latent_ode,"{""latent_dim"": 8, ""lr"": 0.001, ""smooth_weight"": 0.0001, ""weight_decay"": 0.0001}",17,0.1544834117180644,0.19488020351831498,-0.03326622168727433,72
+wavelet_only,cross_train_C2_C3_test_C1,Ridge,"{""alpha"": 1000.0}",,,,,72
+wavelet_only,cross_train_C2_C3_test_C1,LSTM,"{""dropout"": 0.0, ""hidden_dim"": 32, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",2,0.17515988158217322,0.2112280242578204,0.03504181767658965,72
+wavelet_only,cross_train_C2_C3_test_C1,TCN,"{""dropout"": 0.2, ""hidden_dim"": 128, ""kernel_size"": 5, ""levels"": 3, ""lr"": 0.0005, ""weight_decay"": 0.0001}",1,0.27761904463647713,0.3123728548606469,0.9869604729447207,72
+wavelet_only,cross_train_C2_C3_test_C1,Transformer,"{""d_model"": 64, ""dim_feedforward"": 128, ""dropout"": 0.1, ""lr"": 0.0005, ""nhead"": 4, ""num_layers"": 2, ""weight_decay"": 0.0001}",1,0.18630152067324768,0.22636679201573248,0.08060821380708555,72
+wavelet_only,cross_train_C2_C3_test_C1,latent_ode,"{""latent_dim"": 8, ""lr"": 0.001, ""smooth_weight"": 0.0001, ""weight_decay"": 0.0001}",1,0.21581009697455253,0.24561820998323652,0.8401553788403876,72
+original,cross_train_C1_C2_test_C3,Ridge,"{""alpha"": 1000.0}",,,,,52
+original,cross_train_C1_C2_test_C3,LSTM,"{""dropout"": 0.1, ""hidden_dim"": 64, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",4,0.08375567159890078,0.11672990466797442,0.9544624940277114,52
+original,cross_train_C1_C2_test_C3,TCN,"{""dropout"": 0.1, ""hidden_dim"": 64, ""kernel_size"": 3, ""levels"": 2, ""lr"": 0.001, ""weight_decay"": 0.0001}",1,0.09392543360943165,0.1190300643135026,0.9608960099556662,52
+original,cross_train_C1_C2_test_C3,Transformer,"{""d_model"": 64, ""dim_feedforward"": 256, ""dropout"": 0.2, ""lr"": 0.0005, ""nhead"": 4, ""num_layers"": 2, ""weight_decay"": 0.0001}",1,0.17624091909398348,0.19603969541441285,0.9354962832920366,52
+original,cross_train_C1_C2_test_C3,latent_ode,"{""latent_dim"": 32, ""lr"": 0.001, ""smooth_weight"": 0.0005, ""weight_decay"": 0.0001}",9,0.41135977084975306,0.4259294028500345,0.1656823964710719,52
+original,cross_train_C1_C3_test_C2,Ridge,"{""alpha"": 0.1}",,,,,52
+original,cross_train_C1_C3_test_C2,LSTM,"{""dropout"": 0.0, ""hidden_dim"": 32, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",1,0.1376723538272274,0.1685789874047915,-0.10836149625623315,52
+original,cross_train_C1_C3_test_C2,TCN,"{""dropout"": 0.1, ""hidden_dim"": 64, ""kernel_size"": 3, ""levels"": 2, ""lr"": 0.001, ""weight_decay"": 0.0001}",1,0.17411670389638553,0.19945085106049337,0.9850621355884515,52
+original,cross_train_C1_C3_test_C2,Transformer,"{""d_model"": 64, ""dim_feedforward"": 128, ""dropout"": 0.1, ""lr"": 0.001, ""nhead"": 4, ""num_layers"": 1, ""weight_decay"": 0.0001}",12,0.1613183767042863,0.19027699385688604,0.9444485955012272,52
+original,cross_train_C1_C3_test_C2,latent_ode,"{""latent_dim"": 8, ""lr"": 0.001, ""smooth_weight"": 0.0001, ""weight_decay"": 0.0001}",22,0.3509686424650061,0.3917754364617197,-0.21611242242821194,52
+original,cross_train_C2_C3_test_C1,Ridge,"{""alpha"": 1000.0}",,,,,52
+original,cross_train_C2_C3_test_C1,LSTM,"{""dropout"": 0.0, ""hidden_dim"": 32, ""lr"": 0.001, ""num_layers"": 1, ""weight_decay"": 0.0001}",1,0.1974464775202796,0.2387129850707347,0.13045867792714688,52
+original,cross_train_C2_C3_test_C1,TCN,"{""dropout"": 0.2, ""hidden_dim"": 128, ""kernel_size"": 5, ""levels"": 3, ""lr"": 0.0005, ""weight_decay"": 0.0001}",1,0.20655377929061625,0.23630165563965636,0.9902857828497762,52
+original,cross_train_C2_C3_test_C1,Transformer,"{""d_model"": 64, ""dim_feedforward"": 128, ""dropout"": 0.1, ""lr"": 0.0005, ""nhead"": 4, ""num_layers"": 2, ""weight_decay"": 0.0001}",1,0.20229315010985982,0.23745658640553022,0.4631896289285465,52
+original,cross_train_C2_C3_test_C1,latent_ode,"{""latent_dim"": 8, ""lr"": 0.001, ""smooth_weight"": 0.0001, ""weight_decay"": 0.0001}",1,0.24393006882300444,0.2743496850877849,0.9399329238635289,52

@@ -1,36 +1,24 @@
 # Bearing RUL Prediction under Operating Condition Shift
 
-This repository contains code, experiment results, and report assets for bearing Remaining Useful Life (RUL) prediction using the XJTU-SY rolling bearing dataset.
+This repository contains code and final report assets for bearing Remaining Useful Life (RUL) prediction on the XJTU-SY rolling bearing dataset.
 
-The project studies whether vibration-derived features, especially wavelet features, improve RUL prediction when the test operating condition is unseen during training.
+The project studies whether vibration based representations, especially wavelet features, improve RUL prediction when the test operating condition is unseen during training.
 
-## Overview
+## Included
 
-We compare feature-based and sequence-based models for normalized RUL prediction:
+- `src/`: feature extraction, split generation, training, and evaluation scripts
+- `RUL_XJTU_NeurIPS_Final/`: final LaTeX report, figures, references, and style file
+- `results/final_tables/`: selected CSV results used in the final report
 
-- Ridge regression
-- LSTM
-- TCN
-- Transformer
-- Latent ODE
-
-The main evaluation uses a leave-one-condition-out cross-condition protocol:
-
-- Train on C1 + C2, test on C3
-- Train on C1 + C3, test on C2
-- Train on C2 + C3, test on C1
-
-All splits are performed at the bearing trajectory level.
+The raw dataset, processed sequences, checkpoints, slide decks, and large intermediate outputs are not included.
 
 ## Dataset
 
-The raw XJTU-SY dataset is not included in this repository.
+Download the XJTU-SY bearing dataset from:
 
-Download it from:
+https://github.com/WangBiaoXJTU/xjtu-sy-bearing-datasets
 
-- https://github.com/WangBiaoXJTU/xjtu-sy-bearing-datasets
-
-Expected structure:
+Expected local layout:
 
 ```text
 data/
@@ -40,60 +28,54 @@ data/
     40Hz10kN/
 ```
 
-## Feature Settings
-
-The experiments use vibration features extracted from horizontal and vertical acceleration channels.
-
-| Feature setting | Description |
-|---|---|
-| Raw signal | Downsampled horizontal and vertical vibration signals |
-| Time | Time-domain statistical features |
-| Frequency | Frequency-domain spectral features |
-| Original | Time + frequency features |
-| Wavelet-only | db4 WPT and DWT wavelet features |
-| All-expanded | Original + wavelet features |
-| Top-k | Training-only selected features from all-expanded features |
-
-## Main Results
-
-The final report focuses on cross-condition prediction.
-
-Key findings:
-
-- Cross-condition RUL prediction is harder than random window-level evaluation.
-- Wavelet features improve point prediction accuracy.
-- TCN achieves the best MAE and RMSE in the main wavelet setting.
-- Compact feature selection reduces redundancy, but more selected features do not always improve performance.
-
-
 ## Setup
-
-This project uses `uv` for dependency management.
 
 ```bash
 uv sync
 ```
 
-## Reproduce
+## Main Protocol
 
-Generate wavelet features:
+The main experiment uses leave one condition out cross condition evaluation:
+
+- train on C1 and C2, test on C3
+- train on C1 and C3, test on C2
+- train on C2 and C3, test on C1
+
+All splits are performed at the bearing trajectory level.
+
+## Models and Inputs
+
+Models:
+
+- Ridge
+- LSTM
+- TCN
+- Transformer
+- Latent ODE
+
+Input representations:
+
+- raw signal
+- time domain features
+- frequency domain features
+- wavelet domain features
+
+## Useful Scripts
 
 ```bash
-uv run python src/extract_features.py --metadata processed/metadata.csv --out processed/features_wavelet.csv --include_wavelet
-```
-
-Run the main tuned wavelet cross-condition experiment:
-
-```bash
+uv run python src/build_metadata.py
+uv run python src/extract_features.py
+uv run python src/extract_raw_downsample_features.py
+uv run python src/strict_method_v2.py
 uv run python src/tune_wavelet_k40.py
+uv run python src/fixed_wavelet_params_feature_settings_k40.py
 ```
 
-Run feature ablation:
+## Final Report
 
-```bash
-uv run python src/feature_analysis.py --features processed/features_wavelet.csv --split_dir processed/splits
+The final LaTeX report is:
+
+```text
+RUL_XJTU_NeurIPS_Final/final.tex
 ```
-
-## Notes
-
-Large files such as raw data, generated sequences, model checkpoints, and prediction files are excluded from GitHub.
