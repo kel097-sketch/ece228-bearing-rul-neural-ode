@@ -341,31 +341,31 @@ Therefore, we focus the main experiments on wavelet features to evaluate the eff
 \subsection{Sequence Length Selection}
 \label{sec:k_selection}
 
-The value of K defines how much history the neural network can use for training.   Large windows give more context, but small trajectories cannot be included in such cases.   Thus, the value of K will be chosen after analyzing MAE and trajectory coverage.
-
-
-
+The value of K defines how much history the neural network can use for training. Large windows give more context, but small trajectories cannot be included in such cases. Thus, the value of K will be chosen after analyzing MAE and trajectory coverage.
 
 \begin{figure}[!tbp]
     \centering
-    \includegraphics[width=0.72\textwidth]{figures/k_selection_accuracy_vs_k.png}
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/k_selection_accuracy_vs_k.png}
+        \vspace{-0.6em}
+        {\small (a) Validation MAE}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/k_selection_coverage_check.png}
+        \vspace{-0.6em}
+        {\small (b) Trajectory coverage}
+    \end{minipage}
     \caption{
-    Validation MAE under different sequence lengths $K$ for wavelet based sequence models.
+    Sequence length selection for wavelet based sequence models. Left: validation MAE under different sequence lengths $K$. Right: minimum bearing coverage for training, validation, and test trajectories.
     }
-    \label{fig:k_selection_accuracy}
-\end{figure}
-
-\begin{figure}[!tbp]
-    \centering
-    \includegraphics[width=0.72\textwidth]{figures/k_selection_coverage_check.png}
-    \caption{
-    Minimum bearing coverage under different sequence lengths $K$ for training, validation, and test trajectories.
-    }
-    \label{fig:k_selection_coverage}
+    \label{fig:k_selection}
 \end{figure}
 
 \FloatBarrier
-According to Figure~\ref{fig:k_selection_accuracy} and Figure~\ref{fig:k_selection_coverage}, increasing the window size can decrease the validation error, but it also decreases trajectory coverage. This creates a problem for cross condition analysis because short lifetime bearings may not be included when they cannot form complete sequences. Thus, we use $K=40$ as the main configuration because it preserves all trajectories.
+According to Figure~\ref{fig:k_selection}, increasing the window size can decrease the validation error, but it also decreases trajectory coverage. This creates a problem for cross condition analysis because short lifetime bearings may not be included when they cannot form complete sequences. Thus, we use $K=40$ as the main configuration because it preserves all trajectories.
 
 \subsection{Main Cross Condition Results}
 
